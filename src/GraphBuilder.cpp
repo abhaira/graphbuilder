@@ -31,11 +31,11 @@ Graph GraphBuilder::buildALGraph()
 
 			if (nodeLocInGraph == m_graph.nodes.end())
 			{
-				m_graph.nodes.push_back({path.strFirstNode, {{{path.strSecondNode, {}}, path.cost}}});
+				m_graph.nodes.push_back(Node(path.strFirstNode, {{Node(path.strSecondNode), path.cost}}));
 			}
 			else
 			{
-				nodeLocInGraph->childs.push_back({{path.strSecondNode, {}}, path.cost});
+				nodeLocInGraph->childs.push_back({Node(path.strSecondNode), path.cost});
 			}
 		}
 		{
@@ -45,7 +45,7 @@ Graph GraphBuilder::buildALGraph()
 			// If we have seen this node first time. Lets add it to our list too.
 			if (nodeLocInGraph == m_graph.nodes.end())
 			{
-				m_graph.nodes.push_back({path.strSecondNode, {}});
+				m_graph.nodes.push_back(Node(path.strSecondNode));
 			}
 		}
 	}
