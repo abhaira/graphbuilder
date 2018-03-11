@@ -21,34 +21,24 @@ GraphBuilder::GraphBuilder(std::string pstrInputPath,
 
 Graph GraphBuilder::buildALGraph()
 {
-	Graph m_graph;
+	Graph graph;
 
 	for (auto path : m_paths)
 	{
-		{
-			auto nodeLocInGraph = std::find_if(m_graph.nodes.begin(),
-			m_graph.nodes.end(), [&path](const Node & node) { return node.strNode == path.strFirstNode; });
+		auto firstNodeLoc  = std::find_if(graph.nodes.begin(),
+		graph.nodes.end(), [&path](const Node & node) { return node.strNode == path.strFirstNode; });
 
-			if (nodeLocInGraph == m_graph.nodes.end())
-			{
-				m_graph.nodes.push_back(Node(path.strFirstNode, {{Node(path.strSecondNode), path.cost}}));
-			}
-			else
-			{
-				nodeLocInGraph->childs.push_back({Node(path.strSecondNode), path.cost});
-			}
-		}
-		{
-			auto nodeLocInGraph = std::find_if(m_graph.nodes.begin(),
-			m_graph.nodes.end(), [&path](const Node & node) { return node.strNode == path.strSecondNode; });
+		auto secNodeLoc  = std::find_if(graph.nodes.begin(),
+		graph.nodes.end(), [&path](const Node & node) { return node.strNode == path.strSecondNode; });
 
-			// If we have seen this node first time. Lets add it to our list too.
-			if (nodeLocInGraph == m_graph.nodes.end())
-			{
-				m_graph.nodes.push_back(Node(path.strSecondNode));
-			}
-		}
+		if (firstNodeLoc  == graph.nodes.end())
+			firstNodeLoc = graph.nodes.insert(graph.nodes.end(), Node(path.strFirstNode));
+
+		if (secNodeLoc == graph.nodes.end())
+			secNodeLoc = graph.nodes.insert(graph.nodes.end(), Node(path.strSecondNode));
+
+		firstNodeLoc->childs.push_back({secNodeLoc, path.cost});
 	}
 
-	return m_graph;
+	return graph;
 }
